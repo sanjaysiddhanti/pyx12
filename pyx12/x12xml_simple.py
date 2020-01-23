@@ -81,6 +81,8 @@ class x12xml_simple(x12xml):
                 for j in range(len(comp_data)):
                     subele_node = child_node.get_child_node_by_idx(j)
                     (xname, attrib) = self._get_subele_info(subele_node.id)
+                    # Label the node with a verbose description
+                    attrib['description'] = subele_node.name
                     self.writer.elem(xname, comp_data[j].get_value(), attrib)
                 self.writer.pop()  # end composite
             elif child_node.is_element():
@@ -89,7 +91,10 @@ class x12xml_simple(x12xml):
                     #self.writer.empty(u"ele", attrs={u'id': child_node.id})
                 else:
                     (xname, attrib) = self._get_ele_info(child_node.id)
-                    self.writer.elem(xname, seg_data.get_value('%02i' % (i + 1)), attrib)
+                    # Label the node with a verbose description 
+                    attrib['description'] = child_node.name
+                    value = seg_data.get_value('%02i' % (i + 1)).strip()
+                    self.writer.elem(xname, value, attrib)
             else:
                 raise EngineError('Node must be a either an element or a composite')
         self.writer.pop()  # end segment
